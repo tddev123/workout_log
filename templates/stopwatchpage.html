@@ -1,1 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lap Timer</title>
+    <style>
+
+        h2 {
+            text-align: center;
+        }
+        #lapTimer {
+            font-size: 5em;
+            margin-bottom: 10px;
+            text-align: center;
+            
+        }
+
+        #lapList {
+            font-size: 2em;
+            list-style-type: none;
+            padding: 0;
+            text-align: center;
+        }
+
+        #resetlaps{
+            margin-left: 100px;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 40px;
+            font-size: 1em;
+            text-align: center;
+            }
+
+        #timerbuttons {
+            margin-left: 420px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        
+        
+
+        select {
+            font-size: 2em;
+            text-align: left;
+            
+        }
+
+        h5 {
+            text-align: left;
+            size: 3em;
+        }
+
+        p {
+            text-align: left;
+            font-size: 20px;
+        }
+
+        h2 {
+            text-align: left;
+        }
+
+        h4 {
+            text-align: left;
+            
+        }
+
+        #numberInput {
+            padding: 10px;
+            font-size: 40px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 400px; 
+            height: 60px; 
+        
+        }
+
+        #enterweight {
+            font-size: 20px;
+            text-size-adjust: 20px;
+        }
+
+        #allsavenotes {
+            text-align: center;
+        }
+          
+
+
+         
+
+
+
+    </style>
+</head>
+<body>
+
+    
+    <h1>Set Timer</h1>
+    <div id="lapTimer">00:00:00</div>
+    <div id = "timerbuttons">
+    <button id="startStop" onclick="toggleTimer()">Start</button>
+    <button id="lap" onclick="recordLap()">Set</button>
+    <button id="reset" onclick="resetTimer()">Reset</button>
+    <button id="resetlaps" onclick="resetlaps()">Reset All Times</button>
+</div>
+    <ul id="lapList"></ul>
+    
+
+    <div>
+        <a href=http://127.0.0.1:5000/views/calendar><button>Calendar</button></a>
+
+
+
+
+    </div>
+
+    <p>Select a Workout:</p>
+<h2>
+<select id="fruit-select">
+    <option value="shoulders">shoulders</option>
+    <option value="biceps">biceps</option>
+    <option value="wrist">wrist</option>
+    <option value="core">core</option>
+    <option value="lat pulldown">lat pulldown</option>
+    <option value="back rows">back rows</option>
+    <option value="hamstrings">hamstrings</option>
+    <option value="quads">quads</option>
+    <option value="calves">calves</option>
+    <option value="leg press">leg press</option>
+</select> </h2>
+
+<h4>
+    <p id = "enter weight">Enter a weight</p>
+<input type="number" id="numberInput" placeholder="Enter a number">
+</h4>
+
+
+
+
+<script>
+    function saveItem() {
+        //var selectedFruit = document.getElementById("fruit-select").value;
+        var notepadTextarea = document.getElementById();
+
+        if (selectedFruit) {
+            notepadTextarea.value += selectedFruit + "\n";
+            alert("Item saved to notepad!");
+        } else {
+            alert("Please select an item from the dropdown list.");
+        }
+    }
+</script>
+
+    <script>
+        var timer;
+        var startTime;
+        var elapsedTime = 0;
+        var laps = [];
+        var lapCounter = 1;
+
+        function toggleTimer() {
+            if (!timer) {
+                startTime = Date.now() - elapsedTime;
+                timer = setInterval(updateTimer, 1000);
+                document.getElementById("startStop").innerHTML = "Stop";
+            } else {
+                clearInterval(timer);
+                timer = null;
+                document.getElementById("startStop").innerHTML = "Start";
+            }
+        }    
+
+
+
+
+
+        function startTimer() {
+            startTime = Date.now() - elapsedTime;
+            timer = setInterval(updateTimer, 1000);
+            document.getElementById("startStop").innerHTML = "Stop";
+        }
+
+        function stopTimer() {
+            clearInterval(timer);
+            document.getElementById("startStop").innerHTML = "Start";
+        }
+
+        function updateTimer() {
+            var currentTime = Date.now();
+            elapsedTime = currentTime - startTime;
+            document.getElementById("lapTimer").innerHTML = formatTime(elapsedTime);
+        }
+
+        function recordLap() {
+            laps.push(elapsedTime);
+            var lapTime = formatTime(elapsedTime);
+            var lapItem = document.createElement("li");
+            lapItem.textContent = "set " + lapCounter + ": " + lapTime + "\n";
+            document.getElementById("lapList").appendChild(lapItem);
+            lapCounter++;
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            document.getElementById("startStop").innerHTML = "Start";
+            document.getElementById("lapTimer").innerHTML = "00:00:00";
+            elapsedTime = 0;
+            laps = [];
+            //lapCounter = 1;
+        }
+
+        function resetlaps() {
+            document.getElementById("lapList").innerHTML = "";
+            lapCounter = 1;
+        }
+
+        
+
+        function formatTime(milliseconds) {
+            var totalSeconds = Math.floor(milliseconds / 1000);
+            var hours = Math.floor(totalSeconds / 3600);
+            var minutes = Math.floor((totalSeconds % 3600) / 60);
+            var seconds = totalSeconds % 60;
+            return formatNumber(hours) + ":" + formatNumber(minutes) + ":" + formatNumber(seconds);
+        }
+
+        function formatNumber(number) {
+            return (number < 10) ? "0" + number : number;
+        }
+    </script>
+
+    <title>Notepad with Notes List</title>
+    <style>
+        textarea {
+            width: 100%;
+            height: 300px;
+            font-size: 16px;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+        #notes-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .note-item {
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        .note-item button {
+            margin-left: 10px;
+            cursor: pointer;
+        }
+    </style>
+    </head>
+    <body>
+        
+    
+    <h2></h2>
+    
+    <div id="allsavenotes">
+    <button onclick="saveNote()">Save Note</button>
+    <button onclick="saveAllNotes()">Save all notes </button>
+    
+    <h3>Notes List</h3>
+    <ul id="notes-list"></ul>
+    <textarea id="note"></textarea>
+
+    <button id="voiceControlToggle" onclick="toggleVoiceControl()">Enable Voice Control</button>
+    
+    
+    <script>
+
+
+        
+    
+    
+    
+        // Initialize variables for speech recognition
+        var recognition;
+        var isVoiceControlEnabled = false;
+
+        // Function to toggle voice control
+        function toggleVoiceControl() {
+            // Toggle the state of voice control
+            isVoiceControlEnabled = !isVoiceControlEnabled;
+
+            // Update button text based on the state
+            var voiceControlToggle = document.getElementById("voiceControlToggle");
+            voiceControlToggle.textContent = isVoiceControlEnabled ? "Disable Voice Control" : "Enable Voice Control";
+
+            // Initialize or stop speech recognition based on the state
+            if (isVoiceControlEnabled) {
+                startSpeechRecognition();
+            } else {
+                stopSpeechRecognition();
+            }
+        }
+
+        // Function to initialize speech recognition
+        function startSpeechRecognition() {
+            // Check if the browser supports speech recognition
+            if ('webkitSpeechRecognition' in window) {
+                // Initialize speech recognition object
+                recognition = new webkitSpeechRecognition();
+                recognition.continuous = true; // Continuous recognition
+                recognition.lang = 'en-US'; // Language setting
+
+                // Add event listener for speech recognition result
+                recognition.onresult = function(event) {
+                    var result = event.results[event.results.length - 1];
+                    var transcript = result[0].transcript.trim().toLowerCase(); // Get the transcript and convert to lowercase
+
+                    // Check if the recognized speech matches the command
+                    if (transcript.includes("save note")) {
+                        saveNote(); // Call the saveNote function
+                    }
+                };
+
+                // Start speech recognition
+                recognition.start();
+            } else {
+                // Browser does not support speech recognition
+                alert("Speech recognition is not supported in your browser.");
+            }
+        }
+
+        // Function to stop speech recognition
+        function stopSpeechRecognition() {
+            if (recognition) {
+                recognition.stop();
+            }
+        }
+
+
+
+
+
+
+        function saveNote() {
+            var noteTextarea = document.getElementById("note");
+            var noteText = noteTextarea.value.trim();
+            var timestamp = new Date().toLocaleString(); // Get current date and time
+
+        
+
+    
+            if (noteText !== "", noteText == "") {
+                var listItem = document.createElement("li");
+                listItem.className = "note-item";
+                
+                var selectedFruit = document.getElementById("fruit-select").value;
+                var laptimes = document.getElementById("lapList").textContent
+                var lapItem = document.createElement("li")
+                var weight = document.getElementById("numberInput").value
+                
+                
+                
+                var displayText = noteText.substring(0, 10); // Limit to 10 characters
+                if (noteText.length > 10) {
+                    displayText += "...";
+                }
+                listItem.textContent = displayText + " (" + timestamp + ") + (" + selectedFruit +  ") + (" + laptimes + ")"; // Append timestamp
+    
+                var viewButton = document.createElement("button");
+                viewButton.textContent = "View";
+                viewButton.onclick = function() {
+                    alert(noteText + "\n\n" + "Created on: " + timestamp + "\n" + selectedFruit + "\n" + "\n" + weight + " " + "Pounds" + "\n" + laptimes );
+                };
+    
+                var deleteButton = document.createElement("button");
+                deleteButton.textContent = "Delete";
+                deleteButton.onclick = function() {
+                    listItem.remove();
+                };
+    
+                listItem.appendChild(viewButton);
+                listItem.appendChild(deleteButton);
+    
+                document.getElementById("notes-list").appendChild(listItem);
+        
+    
+                noteTextarea.value = ""; // Clear textarea after saving note
+            } else {
+                alert("Please write something before saving!");
+            }
+        }
+
+        function saveAllNotes() {
+            var allNotes = "";
+            var noteItems = document.getElementsByClassName("note-item");
+            for (var i = 0; i < noteItems.length; i++) {
+                allNotes += noteItems[i].textContent + "\n";
+            }
+
+            // Create a Blob containing the notes content
+            var blob = new Blob([allNotes], { type: 'text/plain' });
+
+            // Create a temporary link element
+            var link = document.createElement('a');
+            link.download = 'all_notes.txt'; // Set the download attribute
+            link.href = window.URL.createObjectURL(blob); // Set the href attribute
+
+            // Append the link to the body and trigger the click event
+            document.body.appendChild(link);
+            link.click();
+
+            // Clean up
+            document.body.removeChild(link);
+
+        }
+
+       
+
+    </script>
+    
+
+
+
+</body>
+</html>
 
